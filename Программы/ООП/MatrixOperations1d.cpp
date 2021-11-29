@@ -6,6 +6,14 @@ class MatrixOperations1d
 {
 	public:
 
+	/**
+	 * @brief Суммирование двух одномерных масивов.
+	 * 
+	 * @param array1 Указатель на одномерный массив в качестве первого слагаемого.
+	 * @param array2 Указатель на одномерныймассив в качестве второго слагаемого.
+	 * @param length Длина массивов
+	 * @return Указатель одномерный массив, содержащий сумму двух массивов.
+	 */
 	static float* Array1dSum(float* array1, float* array2, int length)
 	{
 		float *arraySum = new float[length]();
@@ -16,6 +24,14 @@ class MatrixOperations1d
 		return arraySum;
 	}
 
+	/**
+	 * @brief Проверка на равенство двух одномерных массивов.
+	 * 
+	 * @param array1 Указатель на первый одномерный массив.
+	 * @param array2 Указатель на второй одномерный массив.
+	 * @param length Длина массивов.
+	 * @return Истина, если матрицы равны поэлементно. Ложь, если матрицы отличаются хотябы одним элементом.
+	 */
 	static bool Array1dIsEqual(float* array1, float* array2, int length)
 	{
 		float *arraySum = new float[length]();
@@ -27,6 +43,14 @@ class MatrixOperations1d
 		return true;
 	}
 
+	/**
+	 * @brief Умножение одномерного массива на скаляр.
+	 * 
+	 * @param array Указатель на одномерный массив.
+	 * @param scalar Скаляр, на который будет умножен каждыйы элемент одномерного массива.
+	 * @param length Длина одномерного массива.
+	 * @return Указатель на одномерный массив, содержащий результат умножения.
+	 */
 	static float* Array1dScalarMult(float* array, float scalar, int length)
 	{
 		float *resultArray = new float[length]();
@@ -37,6 +61,14 @@ class MatrixOperations1d
 		return resultArray;
 	}
 
+	/**
+	 * @brief Разность двух одномерных массивов.
+	 * 
+	 * @param array1 Указатель на одномерный массив в качестве уменьшаемого.
+	 * @param array2 Указатель на одномерный массив в качестве вычитаемого.
+	 * @param length Длина массивов.
+	 * @return Указатель на одномерный массив, содержащий результат разности.
+	 */
 	static float* Array1dDiff(float* array1, float* array2, int length)
 	{
 		float *arraySum = new float[length]();
@@ -47,6 +79,13 @@ class MatrixOperations1d
 		return arraySum;
 	}
 
+	/**
+	 * @brief Норма одномерного массива
+	 * 
+	 * @param array Указатель на одномерный массив, для которого быдет вычисляться норма.
+	 * @param length Длина массива.
+	 * @return Скаляр, содержащий ному одномерного массива.
+	 */
 	static float Array1dNorm(float* array, int length)
 	{
 		float sum = 0.;
@@ -57,6 +96,13 @@ class MatrixOperations1d
 		return sqrt(sum);
 	}
 
+	/**
+	 * @brief Перевод одномерного масива в двумерный.
+	 * 
+	 * @param array Указатель на одномерный массив.
+	 * @param length Длина массива.
+	 * @return Указатель на двумерный массив размера 1×length, содержащий элементы одномерного.
+	 */
 	static float** Array1dTo2d(float* array, int length)
 	{
 		float **result = new float*[length];
@@ -70,6 +116,14 @@ class MatrixOperations1d
 		return result;
 	}
 
+	/**
+	 * @brief Сравнение каждого элемента массива со значением.
+	 * 
+	 * @param array Указатель на одномерный массив.
+	 * @param value Значение с которым будут сравниваться элементы одномерного массива.
+	 * @param length Длина массива.
+	 * @return Истина, если каждый элемент одномерного массива меньше скаляра. Ложь, если хотябы один элемент одномерного массива больше или равен скаляру.
+	 */
 	static bool Array1dAbsLessThan(float* array, float value, int length)
 	{
 		for (int i = 0; i < length; i++)

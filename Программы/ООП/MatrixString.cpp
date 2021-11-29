@@ -7,6 +7,14 @@ class MatrixString
 {
 	private:
 
+	/**
+	 * @brief Перевод дробого десятичного числа в стоку.
+	 * 
+	 * @tparam T Тип значения.
+	 * @param a_value Значение.
+	 * @param n Количество цифр после запятой.
+	 * @return Строка, содержащая число с n цифор после зхапятой.
+	 */
 	template <typename T>
 	static string to_string_with_precision(const T a_value, const int n = 2)
 	{
@@ -17,7 +25,14 @@ class MatrixString
 	}
 
 	public:
-
+	
+	/**
+	 * @brief Перевод одномерного массива в строку.
+	 * 
+	 * @param array Указатель на одномерный массив.
+	 * @param length Длина одномерного массива.
+	 * @return Строка, содержащая элементы мыссива.
+	 */
 	static string String1dArray(float* array, int length)
 	{
 		string str = "";
@@ -32,6 +47,14 @@ class MatrixString
 		return str;
 	}
 
+	/**
+	 * @brief Перевод двумерного массива в строку.
+	 * 
+	 * @param array Указатель на двумерный массив.
+	 * @param cols Количество столбцов.
+	 * @param rows Количество строк.
+	 * @return Строка, содержащая элементы двумерного массива. Строки массива разделены знаком новой строки '\\n'.
+	 */
 	static string String2dArray(float** array, int cols, int rows)
 	{
 		string str = "";

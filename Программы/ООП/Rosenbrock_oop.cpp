@@ -11,11 +11,17 @@ using namespace std;
 class RosenbrockAlgorithm
 {
 private:
-	float epsilon;
-	float a;
-	float b;
-	int n;
+	float _epsilon;
+	float _a;
+	float _b;
+	int _n;
 
+	/**
+	 * @brief Вычислить единичную матрицу.
+	 * 
+	 * @param size Размер матрицы.
+	 * @return Указатель на двумерный массив содержащий единичнкую матрицу размера size×size.
+	 */
 	static float** GetIdentityMatrix(int size)
 	{
 		float** result = new float*[size];
@@ -28,65 +34,110 @@ private:
 		return result;
 	}
 
+	/**
+	 * @brief Вычислить компоненты А для направлений S.
+	 * 
+	 * @param s Указатель на двумерный массив направлений S.
+	 * @param delta Указатель на одномерный массив длин направлений delta.
+	 * @return Указатель на двумерный массив, содержащий компоненты А.
+	 */
 	float** FindArrayA(float** s, float* delta)
 	{
-		float** result = new float*[n];
-		for (int j = 0; j < n; j++)
+		float** result = new float*[_n];
+		for (int j = 0; j < _n; j++)
 		{
-			float* aj = new float[n]();
-			for (int i = j; i < n; i++) {
-				float* addition = MatrixOperations1d::Array1dScalarMult(s[i], delta[i], n);
-				aj = MatrixOperations1d::Array1dSum(aj, addition, n);
+			float* aj = new float[_n]();
+			for (int i = j; i < _n; i++) {
+				float* addition = MatrixOperations1d::Array1dScalarMult(s[i], delta[i], _n);
+				aj = MatrixOperations1d::Array1dSum(aj, addition, _n);
 			}
 			result[j] = aj;
 		}
 		return result;
 	}
 
+	/**
+	 * @brief Вычислить компоненты B при помощи массив А и старых направлений.
+	 * 
+	 * @param s Указатель на двумерный массив направлений S.
+	 * @param a_array Указатель на двумерный массив, содержащий компоненты А.
+	 * @return Указатель на двумерный массив, содержащий компоненты B, необходымые для построения новых направлений S.
+	 */
 	float** FindArrayB(float** s, float** a_array)
 	{
-		float** b_array = new float*[n];
+		float** b_array = new float*[_n];
 		b_array[0] = a_array[0];
 
-		for (int j = 1; j < n; j++)
+		for (int j = 1; j < _n; j++)
 		{
-			float** A = MatrixOperations1d::Array1dTo2d(a_array[j], n);
+			float** A = MatrixOperations1d::Array1dTo2d(a_array[j], _n);
 
 			float **b_sum = new float*[1];
-			b_sum[0] = new float[n]();
+			b_sum[0] = new float[_n]();
 
 			for (int i = 0; i < j; i++) {
-				float** s_i = MatrixOperations1d::Array1dTo2d(s[i], n);
-				float **s_i_transposed = MatrixOperations2d::Array2dTranspose(s_i, n, 1);
-				float **a_s_transposed_mul = MatrixOperations2d::Array2dMult(A, n, 1, s_i_transposed, 1, n);
-				float **prod_si_mul = MatrixOperations2d::Array2dMult(a_s_transposed_mul, 1, 1, s_i, n, 1);
-				b_sum = MatrixOperations2d::Array2dSum(b_sum, prod_si_mul, n, 1);
+				float** s_i = MatrixOperations1d::Array1dTo2d(s[i], _n);
+				float **s_i_transposed = MatrixOperations2d::Array2dTranspose(s_i, _n, 1);
+				float **a_s_transposed_mul = MatrixOperations2d::Array2dMult(A, _n, 1, s_i_transposed, 1, _n);
+				float **prod_si_mul = MatrixOperations2d::Array2dMult(a_s_transposed_mul, 1, 1, s_i, _n, 1);
+				b_sum = MatrixOperations2d::Array2dSum(b_sum, prod_si_mul, _n, 1);
 			}
 
-			float *B = MatrixOperations2d::Array2dDiff(A, b_sum,n, 1)[0];
+			float *B = MatrixOperations2d::Array2dDiff(A, b_sum,_n, 1)[0];
 			b_array[j] = B;
 		}
 		return b_array;
 	}
 
 public:
-
-	RosenbrockAlgorithm(float iepsilon, float ia, float ib)
+	/**
+	 * @brief Создать новый объект алгоритма Розенброка с дискретным шагом.
+	 * 
+	 * @param epsilon Точность алгоритма.
+	 * @param a Коэффициент растяжения.
+	 * @param b Коэффициент сжатия.
+	 */
+	RosenbrockAlgorithm(float epsilon, float a, float b)
 	{
-		epsilon = iepsilon;
-		a = ia;
-		b = ib;
+		_epsilon = epsilon;
+		_a = a;
+		_b = b;
 	}
 
-	void SetEpsilon(float iepsilon) { epsilon = iepsilon; }
-	void SetA(float ia) { a = ia; }
-	void SetB(float ib) { b = ib; }
+	/**
+	 * @brief Установить значение точности алгоритма.
+	 * 
+	 * @param epsilon Новое значение точности.
+	 */
+	void SetEpsilon(float epsilon) { _epsilon = epsilon; }
 
+	/**
+	 * @brief Установить значение коэффициента растяжения.
+	 * 
+	 * @param a Новое значение коэффициента растяжения.
+	 */
+	void SetA(float a) { _a = a; }
 
-	float* FindMinimum(float (*function)(float*), int in, float* x1, float* delta)
+	/**
+	 * @brief Установить значение коэффициента сжатия.
+	 * 
+	 * @param b Новое значение коэффициента сжатия.
+	 */
+	void SetB(float b) { _b = b; }
+
+	/**
+	 * @brief Определить минимум функции.
+	 * 
+	 * @param function Укащатель на целевую функцию.
+	 * @param n Количество переменных.
+	 * @param x1 Начальная точка.
+	 * @param delta Начальные длины направлений.
+	 * @return Минимальная точка функции. В случае если превышено максимальное количество итераци - точка на послейдней итерации.
+	 */
+	float* FindMinimum(float (*function)(float*), int n, float* x1, float* delta)
 	{
-		n = in;
-		float **s = GetIdentityMatrix(n);
+		_n = n;
+		float **s = GetIdentityMatrix(_n);
 		float* y = x1;
 		int k = 1;
 		int j = 0;
@@ -96,17 +147,17 @@ public:
 		cout << ">>> Iteration: 1" << endl;
 		while (k < MAX_ITERATIONS)
 		{
-			for (j = 0; j < n; j++)
+			for (j = 0; j < _n; j++)
 			{
 		// Шаг 1
 				cout << ">>> Step 1" << endl;
-				cout << "> y:" << endl << MatrixString::String1dArray(y, n) << endl;
+				cout << "> y:" << endl << MatrixString::String1dArray(y, _n) << endl;
 				float f_y = function(y);
 				cout << "> f(y) = " << f_y << endl;
-				cout << "> s[" << j << "] =" << MatrixString::String1dArray(s[j], n) << endl;
+				cout << "> s[" << j << "] =" << MatrixString::String1dArray(s[j], _n) << endl;
 				cout << "> delta[" << j << "] =" << delta[j] << endl;
-				y_with_step = MatrixOperations1d::Array1dSum(y, MatrixOperations1d::Array1dScalarMult(s[j], delta[j], n), n);
-				cout << "> yjs = yj + delta[j] * s[j]:" << endl << MatrixString::String1dArray(y_with_step, n) << endl;
+				y_with_step = MatrixOperations1d::Array1dSum(y, MatrixOperations1d::Array1dScalarMult(s[j], delta[j], _n), _n);
+				cout << "> yjs = yj + delta[j] * s[j]:" << endl << MatrixString::String1dArray(y_with_step, _n) << endl;
 				float f_y_with_step = function(y_with_step);
 				cout << "> f(yjs) = " << f_y_with_step << endl;
 				if (f_y_with_step < f_y) 
@@ -114,11 +165,11 @@ public:
 					cout << "Step successful." << endl;
 					y = y_with_step;
 					y_successful = y_with_step;
-					delta[j] *= a;
+					delta[j] *= _a;
 				}
 				else {
 					cout << "Step unsuccessful." << endl;
-					delta[j] *= b;
+					delta[j] *= _b;
 				}
 				cout << "> delta[" << j << "] = " << delta[j] << endl;
 		// Шаг 2
@@ -129,43 +180,33 @@ public:
 
 		// Шаг 3
 			cout << ">>> Step 3" << endl;
-			cout << "y = " << MatrixString::String1dArray(y, n) << endl;
-			cout << "y_with_step = " << MatrixString::String1dArray(y_with_step, n) << endl;
-			if (!MatrixOperations1d::Array1dIsEqual(y, y_with_step, n))
-			{
+			cout << "y = " << MatrixString::String1dArray(y, _n) << endl;
+			cout << "y_with_step = " << MatrixString::String1dArray(y_with_step, _n) << endl;
+			if (!MatrixOperations1d::Array1dIsEqual(y, y_with_step, _n)) {
 				y = y_successful;
 				continue;
 			}
 		// Шаг 4
 			cout << ">>> Step 4" << endl;
-
-			if (MatrixOperations1d::Array1dAbsLessThan(delta, epsilon, n))
+			if (MatrixOperations1d::Array1dAbsLessThan(delta, _epsilon, _n))
 			{
 				break;
 			}
 		// Шаг 5
 			cout << ">>> Step 5" << endl;
-
-			delta = MatrixOperations1d::Array1dDiff(y_successful, x1, n);
-			
-			cout << " > New delta: = " << MatrixString::String1dArray(delta, n) << endl;
-
+			delta = MatrixOperations1d::Array1dDiff(y_successful, x1, _n);
+			cout << " > New delta: = " << MatrixString::String1dArray(delta, _n) << endl;
 			float **a_array = FindArrayA(s, delta);
-
 			float **b_array = FindArrayB(s, a_array);
-
-			for (int j = 0; j < n; j++)
-				s[j] = MatrixOperations1d::Array1dScalarMult(b_array[j], 1.0 / MatrixOperations1d::Array1dNorm(b_array[j], n), n);
-
+			for (int j = 0; j < _n; j++)
+				s[j] = MatrixOperations1d::Array1dScalarMult(b_array[j], 1.0 / MatrixOperations1d::Array1dNorm(b_array[j], _n), _n);
 			k += 1;
 			cout << ">>> Iteration: " << k << endl;
 		}
-
 		cout << "Finished" << endl;
 		cout << "> Iterations:" << k << endl;
-		cout << "> Result:" << endl << MatrixString::String1dArray(y, n) << endl;
+		cout << "> Result:" << endl << MatrixString::String1dArray(y, _n) << endl;
 		cout << "> Function:" << function(y) << endl;
-
 		return y;
 	}
 	

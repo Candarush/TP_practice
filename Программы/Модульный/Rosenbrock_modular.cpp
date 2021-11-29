@@ -8,6 +8,18 @@ using namespace std;
 
 #define MAX_ITERATIONS 20
 
+/**
+ * @brief Найти минимум при помощи алгоритма Розенброка с дискретным шагом.
+ * 
+ * @param n Количество переменных целевой функции.
+ * @param function Указатель на целевую функцию.
+ * @param epsilon Точность алгоритма.
+ * @param a Коэффициент растяжения.
+ * @param b Коэффициент сжатия.
+ * @param delta Начальные длины направлений.
+ * @param x1 Начальная точка.
+ * @return Минимальная точка функции. В случае если превышено максимальное количество итераци - точка на послейдней итерации.
+ */
 float* Rosenbrock(int n, float (*function)(float*), float epsilon, float a, float b, float* delta, float* x1)
 {
 	float** s = new float*[n];
@@ -42,8 +54,8 @@ float* Rosenbrock(int n, float (*function)(float*), float epsilon, float a, floa
 			cout << "> y:" << endl << String1dArray(y, n) << endl;
 			float f_y = function(y);
 			cout << "> f(y) = " << f_y << endl;
-			cout << "sj =" << String1dArray(s[j], n) << endl;
-			cout << "deltaj =" << delta[j] << endl;
+			cout << "> s" << j << " =" << String1dArray(s[j], n) << endl;
+			cout << "> delta" << j << " =" << delta[j] << endl;
 			y_with_step = Array1dSum(y, Array1dScalarMult(s[j], delta[j], n), n);
 			cout << "> yjs = yj + delta[j] * s[j]:" << endl << String1dArray(y_with_step, n) << endl;
 			float f_y_with_step = function(y_with_step);
@@ -67,8 +79,8 @@ float* Rosenbrock(int n, float (*function)(float*), float epsilon, float a, floa
 
 	// Шаг 3
 		cout << ">>> Step 3" << endl;
-		cout << "y = " << String1dArray(y, n) << endl;
-		cout << "y_with_step = " << String1dArray(y_with_step, n) << endl;
+		cout << "> y = " << String1dArray(y, n) << endl;
+		cout << "> y_with_step = " << String1dArray(y_with_step, n) << endl;
 		if (!Array1dIsEqual(y, y_with_step, n))
 		{
 			y = y_successful;
@@ -136,28 +148,4 @@ float* Rosenbrock(int n, float (*function)(float*), float epsilon, float a, floa
 	cout << "> Function:" << function(y) << endl;
 	
 	return y;
-}
-
-float function1(float* x)
-{
-	return 9 * pow(x[0], 2) + 16 * pow(x[1], 2) - 90 * x[0] - 128 * x[1];
-}
-
-float function2(float* x)
-{
-	return pow(x[0], 2) + 2 * x[0] * x[1] + 2 * pow(x[1], 2) + pow(x[2], 2) - x[1] * x[2] + x[0] + 3 * x[1] - x[2];
-}
-
-int main() {
-	float epsilon = 0.01;
-	float a = 3.0;
-	float b = -0.5;
-	int n1 = 2;
-	int n2 = 3;
-	float* x1 = new float[n1] {2.5f, 2.5f};
-	float* x2 = new float[n2] {2.5f, 2.5f, 2.5f};
-	float* delta1 = new float[n1] {0.5f, 0.5f};
-	float* delta2 = new float[n2] {0.5f, 0.5f, 0.5f};
-	Rosenbrock(n2, function2, epsilon, a, b, delta2, x2);
-	return 0;
 }
